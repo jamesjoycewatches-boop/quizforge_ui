@@ -1,0 +1,27 @@
+name: quizforge_ui
+description: A lightweight, accessible Flutter quiz experience with progress, explanations, scoring, and flexible styling.
+version: 0.1.0
+homepage: https://github.com/YOUR_USERNAME/quizforge_ui
+repository: https://github.com/YOUR_USERNAME/quizforge_ui
+issue_tracker: https://github.com/YOUR_USERNAME/quizforge_ui/issues
+topics:
+  - quiz
+  - education
+  - accessibility
+  - flutter
+  - ui
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+  flutter: '>=3.19.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
