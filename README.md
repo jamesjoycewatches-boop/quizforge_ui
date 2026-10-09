@@ -11,6 +11,19 @@ QuizForge UI helps Flutter developers add a polished multiple-choice learning ex
 
 > **Project status:** Early preview (`0.1.0`). Community contributions and feedback welcome. This repository is not affiliated with OpenAI or Flutter.
 
+## Screenshots
+
+### Interactive Quiz Interface
+
+![QuizForge UI Question Screen](screenshots/quiz-demo.png)
+
+### Quiz Results
+
+![QuizForge UI Result Screen](screenshots/quiz-result.png)
+
+[🚀 Try the Live Demo](https://jamesjoycewatches-boop.github.io/quizforge_ui/)
+
+
 ## Features
 
 - **Responsive UI:** Works on narrow phones, tablets, and desktop Flutter apps.
