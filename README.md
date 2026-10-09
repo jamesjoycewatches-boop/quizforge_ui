@@ -19,14 +19,14 @@ QuizForge UI helps Flutter developers add a polished multiple-choice learning ex
 
 ## Quick start
 
-This package is intended to be installed from a GitHub repository initially; replace `YOUR_USERNAME` with the real owner after publishing the repository.
+Install QuizForge UI directly from the official GitHub repository:
 
 ```yaml
 # pubspec.yaml
 dependencies:
   quizforge_ui:
     git:
-      url: https://github.com/YOUR_USERNAME/quizforge_ui.git
+      url: https://github.com/jamesjoycewatches-boop/quizforge_ui.git
       ref: v0.1.0
 ```
 
