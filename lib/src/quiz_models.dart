@@ -44,10 +44,13 @@ class QuizAnswer {
   });
 
   final String questionId;
-  final String selectedOptionId;
+  final String? selectedOptionId;
   final String correctOptionId;
 
-  bool get isCorrect => selectedOptionId == correctOptionId;
+  bool get isTimedOut => selectedOptionId == null;
+
+bool get isCorrect =>
+    !isTimedOut && selectedOptionId == correctOptionId;
 }
 
 /// Final quiz statistics (calculated only from submitted answers).
