@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 
 import 'quiz_models.dart';
@@ -5,9 +7,17 @@ import 'quiz_models.dart';
 /// Owns the quiz's small and deterministic state machine.
 ///
 /// Question ordering is preserved. Answers are not retained after [restart].
-/// The controller owns no timers, subscriptions, network calls, or analytics.
+/// The controller supports an optional per-question countdown timer.
+/// Timer resources are automatically cleaned up on dispose.
+/// No network calls or analytics are used.
+
 class QuizController extends ChangeNotifier {
-  QuizController({required List<QuizQuestion> questions})
+  
+QuizController({
+  required List<QuizQuestion> questions,
+  this.questionTimeLimit,
+})
+
       : _questions = List<QuizQuestion>.unmodifiable(
           questions.map(
             (question) => QuizQuestion(
@@ -20,14 +30,26 @@ class QuizController extends ChangeNotifier {
           ),
         ) {
     _validateQuestions(_questions);
+        
+_startQuestionTimer();
+
   }
 
   final List<QuizQuestion> _questions;
+  final Duration? questionTimeLimit;
   final List<QuizAnswer> _answers = <QuizAnswer>[];
   int _currentIndex = 0;
   String? _selectedOptionId;
   bool _submitted = false;
   bool _completed = false;
+
+Timer? _questionTimer;
+int? _secondsRemaining;
+bool _timedOut = false;
+
+bool get hasTimer => questionTimeLimit != null;
+int? get secondsRemaining => _secondsRemaining;
+bool get isTimedOut => _timedOut;
 
   List<QuizQuestion> get questions => _questions;
   List<QuizAnswer> get answers => List<QuizAnswer>.unmodifiable(_answers);
@@ -67,6 +89,8 @@ class QuizController extends ChangeNotifier {
     if (!canSubmit) {
       throw StateError('Select an option before submitting.');
     }
+    
+_questionTimer?.cancel();
     _answers.add(QuizAnswer(
       questionId: currentQuestion.id,
       selectedOptionId: _selectedOptionId!,
@@ -87,6 +111,9 @@ class QuizController extends ChangeNotifier {
       _currentIndex++;
       _submitted = false;
       _selectedOptionId = null;
+      
+_startQuestionTimer();
+
     }
     notifyListeners();
   }
@@ -98,8 +125,69 @@ class QuizController extends ChangeNotifier {
     _submitted = false;
     _completed = false;
     _answers.clear();
+    
+_startQuestionTimer();
+
     notifyListeners();
   }
+
+@override
+void dispose() {
+  _questionTimer?.cancel();
+  super.dispose();
+}
+
+void _startQuestionTimer() {
+  _questionTimer?.cancel();
+  _questionTimer = null;
+  _timedOut = false;
+
+  final limit = questionTimeLimit;
+
+  if (limit == null) {
+    _secondsRemaining = null;
+    return;
+  }
+
+  final seconds = limit.inSeconds;
+  if (seconds <= 0 || limit != Duration(seconds: seconds)) {
+    throw ArgumentError.value(
+      limit,
+      'questionTimeLimit',
+      'Time limit must be a positive whole number of seconds.',
+    );
+  }
+
+  _secondsRemaining = seconds;
+
+  _questionTimer = Timer.periodic(
+    const Duration(seconds: 1),
+    (timer) {
+      if (_submitted || _completed) {
+        timer.cancel();
+        return;
+      }
+
+      _secondsRemaining = _secondsRemaining! - 1;
+
+      if (_secondsRemaining == 0) {
+        timer.cancel();
+        _timedOut = true;
+        _selectedOptionId = null;
+
+        _answers.add(QuizAnswer(
+          questionId: currentQuestion.id,
+          selectedOptionId: null,
+          correctOptionId: currentQuestion.correctOptionId,
+        ));
+
+        _submitted = true;
+      }
+
+      notifyListeners();
+    },
+  );
+}
 
   static void _validateQuestions(List<QuizQuestion> questions) {
     if (questions.isEmpty) {
