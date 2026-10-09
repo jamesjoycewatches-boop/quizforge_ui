@@ -25,7 +25,6 @@ class QuizQuestion {
     this.explanation,
   })  : assert(id != ''),
         assert(prompt != ''),
-        assert(options.length >= 2),
         assert(correctOptionId != '');
 
   final String id;
