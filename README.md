@@ -1,5 +1,9 @@
 # QuizForge UI
+[![Flutter CI](https://github.com/jamesjoycewatches-boop/quizforge_ui/actions/workflows/main.yml/badge.svg)](https://github.com/jamesjoycewatches-boop/quizforge_ui/actions/workflows/main.yml)
 
+[🚀 Try Live Demo](https://jamesjoycewatches-boop.github.io/quizforge_ui/)
+
+[📦 View Latest Release](https://github.com/jamesjoycewatches-boop/quizforge_ui/releases/tag/v0.1.0)
 **A beautiful, accessible, lightweight quiz toolkit for Flutter.**
 
 QuizForge UI helps Flutter developers add a polished multiple-choice learning experience without building a question engine, answer feedback, progress bar, score screen, and accessibility support from scratch.
