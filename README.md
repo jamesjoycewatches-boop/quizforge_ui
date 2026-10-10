@@ -139,8 +139,8 @@ final controller = QuizController(
 
 To disable the timer, omit `questionTimeLimit`.
 
-This feature is currently available on the
-`feature/quiz-countdown-timer` development branch.
+
+**Version note:** The countdown timer was introduced after v0.1.0 and is not included in that release. Use a Git ref containing this feature until the next version is published.
 
 ## Run the example
 
@@ -199,7 +199,7 @@ Quiz data and answers remain in process memory. This toolkit neither persists th
 
 - [ ] Internationalization hooks for built-in UI strings
 - [ ] Randomized options with stable seeded order
-- [ ] Optional timed practice mode
+- [x] Optional timed practice mode with per-question countdown
 - [ ] More accessibility testing with assistive technologies
 - [ ] Community-provided themes and samples
 
