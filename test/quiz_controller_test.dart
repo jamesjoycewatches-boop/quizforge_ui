@@ -159,8 +159,6 @@ testWidgets('timer stops on submit and resets on next question',
     questionTimeLimit: const Duration(seconds: 3),
   );
 
-  addTearDown(controller.dispose);
-
   expect(controller.secondsRemaining, 3);
 
   await tester.pump(const Duration(seconds: 1));
@@ -185,6 +183,8 @@ testWidgets('timer stops on submit and resets on next question',
 
   expect(controller.secondsRemaining, 2);
   expect(controller.isTimedOut, isFalse);
+  
+  controller.dispose();
 });
 
 testWidgets('restart resets countdown and quiz progress',
@@ -193,8 +193,6 @@ testWidgets('restart resets countdown and quiz progress',
     questions: [first, second],
     questionTimeLimit: const Duration(seconds: 3),
   );
-
-  addTearDown(controller.dispose);
 
   await tester.pump(const Duration(seconds: 1));
 
@@ -216,6 +214,8 @@ testWidgets('restart resets countdown and quiz progress',
   await tester.pump(const Duration(seconds: 1));
 
   expect(controller.secondsRemaining, 2);
+  
+  controller.dispose();
 });
 
 testWidgets('quiz works normally without a timer',
