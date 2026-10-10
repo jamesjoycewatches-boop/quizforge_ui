@@ -127,4 +127,29 @@ void main() {
       expect(controller.summary.scorePercent, 0);
     });
   });
+  
+  testWidgets('timer expires and records unanswered question',
+      (tester) async {
+    final controller = QuizController(
+      questions: [first, second],
+      questionTimeLimit: const Duration(seconds: 2),
+    );
+
+    addTearDown(controller.dispose);
+
+    expect(controller.hasTimer, isTrue);
+    expect(controller.secondsRemaining, 2);
+    expect(controller.answeredCount, 0);
+
+    await tester.pump(const Duration(seconds: 2));
+
+    expect(controller.secondsRemaining, 0);
+    expect(controller.isTimedOut, isTrue);
+    expect(controller.isSubmitted, isTrue);
+    expect(controller.answeredCount, 1);
+    expect(controller.answers.single.selectedOptionId, isNull);
+    expect(controller.answers.single.isTimedOut, isTrue);
+    expect(controller.answers.single.isCorrect, isFalse);
+  });
+
 }
