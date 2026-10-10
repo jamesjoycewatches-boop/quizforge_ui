@@ -127,4 +127,125 @@ void main() {
       expect(controller.summary.scorePercent, 0);
     });
   });
+  
+  testWidgets('timer expires and records unanswered question',
+      (tester) async {
+    final controller = QuizController(
+      questions: [first, second],
+      questionTimeLimit: const Duration(seconds: 2),
+    );
+
+    addTearDown(controller.dispose);
+
+    expect(controller.hasTimer, isTrue);
+    expect(controller.secondsRemaining, 2);
+    expect(controller.answeredCount, 0);
+
+    await tester.pump(const Duration(seconds: 2));
+
+    expect(controller.secondsRemaining, 0);
+    expect(controller.isTimedOut, isTrue);
+    expect(controller.isSubmitted, isTrue);
+    expect(controller.answeredCount, 1);
+    expect(controller.answers.single.selectedOptionId, isNull);
+    expect(controller.answers.single.isTimedOut, isTrue);
+    expect(controller.answers.single.isCorrect, isFalse);
+  });
+
+testWidgets('timer stops on submit and resets on next question',
+    (tester) async {
+  final controller = QuizController(
+    questions: [first, second],
+    questionTimeLimit: const Duration(seconds: 3),
+  );
+
+  expect(controller.secondsRemaining, 3);
+
+  await tester.pump(const Duration(seconds: 1));
+  expect(controller.secondsRemaining, 2);
+
+  controller.selectOption('a');
+  controller.submit();
+
+  await tester.pump(const Duration(seconds: 5));
+
+  expect(controller.secondsRemaining, 2);
+  expect(controller.isTimedOut, isFalse);
+  expect(controller.answeredCount, 1);
+
+  controller.next();
+
+  expect(controller.currentIndex, 1);
+  expect(controller.secondsRemaining, 3);
+  expect(controller.isSubmitted, isFalse);
+
+  await tester.pump(const Duration(seconds: 1));
+
+  expect(controller.secondsRemaining, 2);
+  expect(controller.isTimedOut, isFalse);
+  
+  controller.dispose();
+});
+
+testWidgets('restart resets countdown and quiz progress',
+    (tester) async {
+  final controller = QuizController(
+    questions: [first, second],
+    questionTimeLimit: const Duration(seconds: 3),
+  );
+
+  await tester.pump(const Duration(seconds: 1));
+
+  expect(controller.secondsRemaining, 2);
+
+  controller.selectOption('a');
+  controller.submit();
+
+  expect(controller.answeredCount, 1);
+
+  controller.restart();
+
+  expect(controller.currentIndex, 0);
+  expect(controller.answeredCount, 0);
+  expect(controller.secondsRemaining, 3);
+  expect(controller.isTimedOut, isFalse);
+  expect(controller.isSubmitted, isFalse);
+
+  await tester.pump(const Duration(seconds: 1));
+
+  expect(controller.secondsRemaining, 2);
+  
+  controller.dispose();
+});
+
+testWidgets('quiz works normally without a timer',
+    (tester) async {
+  final controller = QuizController(
+    questions: [first, second],
+  );
+
+  addTearDown(controller.dispose);
+
+  expect(controller.hasTimer, isFalse);
+  expect(controller.secondsRemaining, isNull);
+
+  await tester.pump(const Duration(seconds: 5));
+
+  expect(controller.isTimedOut, isFalse);
+  expect(controller.answeredCount, 0);
+
+  controller.selectOption('a');
+  controller.submit();
+
+  expect(controller.isSubmitted, isTrue);
+  expect(controller.answers.single.isCorrect, isTrue);
+  expect(controller.secondsRemaining, isNull);
+
+  controller.next();
+
+  expect(controller.currentIndex, 1);
+  expect(controller.isTimedOut, isFalse);
+  expect(controller.secondsRemaining, isNull);
+});
+
 }

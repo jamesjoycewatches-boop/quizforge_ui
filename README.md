@@ -26,6 +26,7 @@ QuizForge UI helps Flutter developers add a polished multiple-choice learning ex
 
 ## Features
 
+- **Optional Countdown Timer:** Configure a per-question time limit with automatic timeout handling, live countdown display, and timer reset on restart.
 - **Responsive UI:** Works on narrow phones, tablets, and desktop Flutter apps.
 - **Accessible by default:** Semantic labels, focusable Material controls, live feedback, and reduced-animation support.
 - **Learning feedback:** Clear correct/incorrect states and optional explanations.
@@ -113,6 +114,34 @@ class _PracticePageState extends State<PracticePage> {
 
 Supply `PracticePage` as the `home` of a `MaterialApp`.
 
+## Optional Countdown Timer
+
+QuizForge UI supports an optional countdown timer for each question.
+
+To enable a 30-second timer, configure the QuizController:
+
+```dart
+final controller = QuizController(
+  questions: demoQuestions,
+  questionTimeLimit: const Duration(seconds: 30),
+);
+```
+
+### Timer Features
+
+- Countdown starts automatically for each question.
+- Remaining seconds are displayed in the quiz interface.
+- Timer stops when an answer is submitted.
+- Unanswered questions are automatically recorded when time expires.
+- Countdown resets when moving to the next question.
+- Restarting the quiz resets the timer.
+- Timer resources are cleaned up when the controller is disposed.
+
+To disable the timer, omit `questionTimeLimit`.
+
+
+**Version note:** The countdown timer was introduced after v0.1.0 and is not included in that release. Use a Git ref containing this feature until the next version is published.
+
 ## Run the example
 
 Install the [Flutter SDK](https://docs.flutter.dev/get-started/install), then:
@@ -170,7 +199,7 @@ Quiz data and answers remain in process memory. This toolkit neither persists th
 
 - [ ] Internationalization hooks for built-in UI strings
 - [ ] Randomized options with stable seeded order
-- [ ] Optional timed practice mode
+- [x] Optional timed practice mode with per-question countdown
 - [ ] More accessibility testing with assistive technologies
 - [ ] Community-provided themes and samples
 

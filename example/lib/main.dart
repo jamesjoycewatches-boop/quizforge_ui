@@ -44,7 +44,12 @@ class _DemoHomeState extends State<DemoHome> {
   @override
   void initState() {
     super.initState();
-    controller = QuizController(questions: demoQuestions);
+    
+controller = QuizController(
+  questions: demoQuestions,
+  questionTimeLimit: const Duration(seconds: 30),
+);
+
   }
 
   @override
