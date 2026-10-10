@@ -91,4 +91,44 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('This is why the answer is correct.'), findsNothing);
   });
+  
+testWidgets('countdown displays time and timeout feedback',
+    (tester) async {
+  final controller = QuizController(
+    questions: questions,
+    questionTimeLimit: const Duration(seconds: 2),
+  );
+
+  addTearDown(controller.dispose);
+
+  await tester.pumpWidget(
+    MaterialApp(
+      home: Scaffold(
+        body: QuizView(controller: controller),
+      ),
+    ),
+  );
+
+  expect(find.text('2s remaining'), findsOneWidget);
+  expect(controller.isTimedOut, isFalse);
+
+  await tester.pump(const Duration(seconds: 1));
+
+  expect(find.text('1s remaining'), findsOneWidget);
+
+  await tester.pump(const Duration(seconds: 1));
+
+  expect(find.text('0s remaining'), findsOneWidget);
+  expect(controller.isTimedOut, isTrue);
+  expect(controller.isSubmitted, isTrue);
+
+  expect(
+    find.text('Time is up! This question was marked unanswered.'),
+    findsOneWidget,
+  );
+
+  expect(controller.answeredCount, 1);
+  expect(controller.answers.single.isCorrect, isFalse);
+});
+
 }
