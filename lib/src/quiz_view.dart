@@ -69,6 +69,38 @@ class QuizView extends StatelessWidget {
                         answeredCount: controller.answeredCount,
                         accent: accent,
                       ),
+                      
+if (controller.hasTimer &&
+    controller.secondsRemaining != null) ...[
+  const SizedBox(height: 8),
+  Semantics(
+    label: 'Time remaining: ${controller.secondsRemaining} seconds',
+    excludeSemantics: true,
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Icon(
+          Icons.timer_outlined,
+          color: controller.secondsRemaining! <= 10
+              ? scheme.error
+              : accent,
+          size: 18,
+        ),
+        const SizedBox(width: 6),
+        Text(
+          '${controller.secondsRemaining}s remaining',
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            color: controller.secondsRemaining! <= 10
+                ? scheme.error
+                : accent,
+          ),
+        ),
+      ],
+    ),
+  ),
+],
+
                       const SizedBox(height: 16),
                       AnimatedSwitcher(
                         duration: duration,
@@ -302,14 +334,18 @@ class _QuestionPanel extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      controller.selectedIsCorrect
-                          ? 'Correct answer!'
-                          : 'Not quite — keep learning.',
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
+                    
+Text(
+  controller.isTimedOut
+      ? 'Time is up! This question was marked unanswered.'
+      : controller.selectedIsCorrect
+          ? 'Correct answer!'
+          : 'Not quite — keep learning.',
+  style: theme.textTheme.titleSmall?.copyWith(
+    fontWeight: FontWeight.w800,
+  ),
+),
+
                     if (showExplanations &&
                         question.explanation != null &&
                         question.explanation!.trim().isNotEmpty) ...[
